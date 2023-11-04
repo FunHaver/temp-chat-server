@@ -1,0 +1,17 @@
+{
+  "name": "temp-chat-server",
+  "version": "0.0.1",
+  "description": "The server program for my temp chat app",
+  "main": "src/app.js",
+  "scripts": {
+    "start-dev": "node src/app.js --dev",
+    "start": "node src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Conor Sullivan",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}
