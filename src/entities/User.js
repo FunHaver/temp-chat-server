@@ -3,7 +3,6 @@ const Entity = require("./Entity");
 class User extends Entity {
     username = '';
     chatRoomId = '';
-    
     /**
      * Construct user
      * @param {Object} constructorArg for new instances, an object like so 

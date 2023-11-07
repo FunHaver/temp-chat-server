@@ -3,9 +3,9 @@ const app = express();
 const port = 3000;
 let cors = {}; 
 
-const auth = require('./auth/auth');
+const auth = require('./api/auth');
+const message = require('./api/message');
 const database = require('./database/database');
-const entityService = require('./entityService');
 
 let helpCLIMessage = function(){
     console.log("To run in production, do not add any arguments: node app.js");
@@ -36,6 +36,7 @@ database.initializeDatabase();
 app.use(express.json());
 
 app.use('/api/auth', auth);
+app.use('/api/message', message);
 
 app.listen(port, ()=> {
     console.log(`Temp chat listening on port: ${port}`);

@@ -1,12 +1,14 @@
 const database = require('./database/database');
 const User = require('./entities/User');
 const ChatRoom = require('./entities/ChatRoom');
+const Message  = require("./entities/Message");
 
 class EntityService {
     database;
     classMap = {
         "ChatRoom": ChatRoom,
-        "User": User
+        "User": User,
+        "Message": Message
     }
 
     constructor(){
@@ -56,6 +58,34 @@ class EntityService {
         }
         user.setChatRoomId(room.getUniqueId());
 
+    }
+
+    /**
+     * @async
+     * @param {User} user 
+     * @param {ChatRoom} room 
+     * @param {string} content 
+     */
+    async createMessage(user, room, content) {
+        let constructorArg = {
+            "userId": user.getUniqueId(),
+            "chatRoomId": room.getUniqueId(),
+            "content": content
+        }
+
+        let newMessage = new Message(constructorArg);
+        await this.database.createEntity(newMessage, 
+            {
+                "uniqueId": newMessage.getUniqueId(),
+                "content": newMessage.getContent(),
+                "userId": newMessage.getUserId(),
+                "chatRoomId": newMessage.getChatRoomId(),
+                "creationTime": newMessage.getCreationTime()
+            });
+        let databaseObj = this.database.readEntity("Message", newMessage.getUniqueId());
+        newMessage = new Message(databaseObj);
+        
+        return newMessage;
     }
 
     /**

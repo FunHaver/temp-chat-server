@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const entityService = require('../entityService');
+const ChatRoom = require('../entities/ChatRoom');
+const User = require('../entities/User');
 
 /**
  * @async
  * @param {string} username 
- * @returns {Object} user and chatroom objects
+ * @returns {{user: User, chatRoom: ChatRoom}} user and chatroom objects
  */
 let generateRoom = async function(username){
     let user = await entityService.createUser(username);
@@ -16,7 +18,12 @@ let generateRoom = async function(username){
         chatRoom: chatRoom
     };
 }
-
+/**
+ * 
+ * @param {string} username 
+ * @param {string} chatRoomId 
+ * @returns {Object} chat room object
+ */
 let joinRoom = async function(username, chatRoomId){
     let user = entityService.createUser(username);
     let chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);

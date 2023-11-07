@@ -19,6 +19,13 @@ class Database {
                     chat_room_id VARYING CHARACTER(255), 
                     FOREIGN KEY(chat_room_id) REFERENCES chat_room(unique_id))`);
             db.run("CREATE TABLE chat_room(unique_id VARYING CHARACTER(255) UNIQUE PRIMARY KEY NOT NULL)");
+            db.run(`CREATE TABLE message(unique_id VARYING CHARACTER(255) UNIQUE PRIMARY KEY NOT NULL,
+                    content VARYING CHARACTER(255) NOT NULL,
+                    user_id VARYING CHARACTER(255) NOT NULL,
+                    chat_room_id VARYING CHARACTER(255) NOT NULL,
+                    creation_time TEXT NOT NULL,
+                    FOREIGN KEY(user_id) REFERENCES user(unique_id),
+                    FOREIGN KEY(chat_room_id) REFERENCES chat_room(unique_id))`);
         })
     }
 
