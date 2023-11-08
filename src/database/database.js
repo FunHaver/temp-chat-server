@@ -188,6 +188,9 @@ class Database {
         }
 
         let result = await readPromise();
+        if(result == null){ //null or undefined
+           return null;
+        }
 
         let resultCamel = {
             className: className

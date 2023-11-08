@@ -5,6 +5,7 @@ let cors = {};
 
 const auth = require('./api/auth');
 const message = require('./api/message');
+const chatRoom = require('./api/chatRoom');
 const database = require('./database/database');
 
 let helpCLIMessage = function(){
@@ -37,7 +38,7 @@ app.use(express.json());
 
 app.use('/api/auth', auth);
 app.use('/api/message', message);
-
+app.use('/api/chatRoom', chatRoom);
 app.listen(port, ()=> {
     console.log(`Temp chat listening on port: ${port}`);
 })

@@ -95,8 +95,14 @@ class EntityService {
      */
     async getEntity(className, uniqueId){
         let databaseObj = await this.database.readEntity(className, uniqueId);
-        let newClass = this.classMap[className];
-        return new newClass(databaseObj);
+        if(databaseObj == null){
+            return null;
+        } else {
+            let newClass = this.classMap[className];
+            return new newClass(databaseObj);
+        }
+
+
     }
 }
 
