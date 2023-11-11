@@ -130,6 +130,7 @@ class Database {
      * @param  {Object} properites.
      */
     async createEntity(entity, properites){
+        
         let table = this.camelToSnakeCase(entity.className);
         let queryStringStart = `INSERT INTO ${table}(`;
         let queryStringValues = ") VALUES (";

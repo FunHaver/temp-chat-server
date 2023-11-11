@@ -8,7 +8,7 @@ class Message extends Entity {
     creationTime = ''
     constructor(constructorArg){
         if(constructorArg["uniqueId"] === undefined){
-            super("User");
+            super("Message");
             this.userId = constructorArg["userId"];
             this.chatRoomId = constructorArg["chatRoomId"];
             this.content = constructorArg["content"];
@@ -31,6 +31,10 @@ class Message extends Entity {
 
     getChatRoomId(){
         return this.chatRoomId;
+    }
+
+    getCreationTime(){
+        return this.creationTime;
     }
 
 }
