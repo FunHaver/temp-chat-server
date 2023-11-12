@@ -25,13 +25,18 @@ let generateRoom = async function(username){
  * @returns {Object} chat room object
  */
 let joinRoom = async function(username, chatRoomId){
-    let user = entityService.createUser(username);
+    let user = await entityService.createUser(username);
     let chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);
-    await entityService.assignUserToRoom(user, chatRoom);
-    return {
-        user: user,
-        chatRoom: chatRoom
+    try {
+        await entityService.assignUserToRoom(user, chatRoom);
+        return {
+            user: user,
+            chatRoom: chatRoom
+        }
+    } catch (e){
+        throw new Error(e);
     }
+
 }
 
 router.post(`/login`, (req, res) => {
@@ -42,13 +47,12 @@ router.post(`/login`, (req, res) => {
         })
           
     } else {
-        try{
-            joinRoom(req.body.username, req.body.chatRoomId).then(result => {
-                res.send(result);
-            })
-        } catch (e){
+
+        joinRoom(req.body.username, req.body.chatRoomId).then(result => {
+            res.send(result);
+        }).catch(e => {
             res.status(404).send("Chat room not found!")
-        }
+        })
     }
 })
 

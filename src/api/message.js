@@ -10,15 +10,14 @@ const User = require('../entities/User');
  * @param {Object} requestBody 
  */
 let validateMessage = async function(requestBody){
-    
     let validationResults = {
         errors: [],
         user: null,
         chatRoom: null,
         content: null
     }
-    if(requestBody.user){
-        let dbUser = await entityService.getEntity("User", requestBody.user.uniqueId);
+    if(requestBody.userId){
+        let dbUser = await entityService.getEntity("User", requestBody.userId);
         if(dbUser === null){
             validationResults.errors.push("User does not exist!");
         } else {
@@ -28,8 +27,8 @@ let validateMessage = async function(requestBody){
         validationResults.errors.push("No user in message");
     }
 
-    if(requestBody.chatRoom){
-        let dbChatRoom = await entityService.getEntity("ChatRoom", requestBody.chatRoom.uniqueId);
+    if(requestBody.chatRoomId){
+        let dbChatRoom = await entityService.getEntity("ChatRoom", requestBody.chatRoomId);
         if(dbChatRoom === null){
             validationResults.errors.push("Invalid Chat Room");
         } else if(validationResults.user && dbChatRoom.uniqueId !== validationResults.user.chatRoomId){
@@ -58,9 +57,7 @@ let validateMessage = async function(requestBody){
 
 /**
  * @async
- * @param {User} user 
- * @param {ChatRoom} chatRoom
- * @param {string} content
+ * @param {Object} messageRequest
  * @returns {Message} message that has been posted
  */
 let createMessage = async function(messageRequest){
@@ -78,7 +75,10 @@ router.post('/new', (req, res) => {
             return createMessage(result)
         }
     }).then(result => {
+        //update all clients with new message
         res.send(result);
+    }).catch(e => {
+        throw new Error(e);
     })
 })
 

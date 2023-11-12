@@ -1,11 +1,14 @@
 const Entity = require("./Entity");
 const moment = require("moment");
+const entityService = require("../entityService");
 
 class Message extends Entity {
     content = '';
     userId = '';
     chatRoomId = '';
-    creationTime = ''
+    creationTime = '';
+    user = {};
+    chatRoom = {};
     constructor(constructorArg){
         if(constructorArg["uniqueId"] === undefined){
             super("Message");
@@ -35,6 +38,18 @@ class Message extends Entity {
 
     getCreationTime(){
         return this.creationTime;
+    }
+
+    /**
+     * 
+     * @returns {ChatRoom}
+     */
+    async setChatRoom(chatRoom){
+        this.chatRoom = chatRoom;
+    }
+
+    async setUser(user){
+        this.user = user;
     }
 
 }

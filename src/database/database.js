@@ -248,7 +248,22 @@ class Database {
             })
         }
 
-        return await readPromise();
+        let result = await readPromise();
+        if(result == null){ //null or undefined
+           return null;
+        }
+
+        let resultCamel = []
+        for(let i = 0; i < result.length; i++){
+            resultCamel.push({
+                "className": className
+            })
+            for(const [key, value] of Object.entries(result[i])){
+                let camelKey = this.snakeToCamelCase(key);
+                resultCamel[i][camelKey] = value;
+            }
+        }
+        return resultCamel;
     }
 }
 

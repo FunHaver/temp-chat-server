@@ -15,11 +15,12 @@ class UserService {
      * @param {User} user 
      */
     addUser(user){
-        if(this.userMap[user.chatRoomId] === "undefined"){
+        if(this.userMap[user.chatRoomId] === undefined){
             this.userMap[user.chatRoomId] = [user];
         } else {
             this.userMap[user.chatRoomId].push(user);
         }
+        console.log(this.userMap);
     }
 
     /**
@@ -38,11 +39,11 @@ class UserService {
 
     /**
      * 
-     * @param {ChatRoom} chatRoom 
+     * @param {string} chatRoomId
      * @returns 
      */
-    getRoomUsers(chatRoom){
-        return this.userMap[chatRoom.uniqueId];
+    getRoomUsers(chatRoomId){
+        return this.userMap[chatRoomId];
     }
 
     updateAllUsersInRoom(chatRoom, users){

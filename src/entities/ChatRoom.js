@@ -44,14 +44,18 @@ class ChatRoom extends Entity{
      * @param {User} user 
      */
     removeUser(user){
-        this.users.push(user);
+        //
     }
 
+
+    setMessages(messages){
+        this.messages = messages;
+    }
     /**
-     * 
+     * @async
      * @returns {Array<string>} array of messages in room
      */
-    getMessages(){
+    async getMessages(){  
         return this.messages;
     }
 
@@ -59,8 +63,9 @@ class ChatRoom extends Entity{
      * 
      * @param {string} message the message that is being posted
      */
-    postMessage(message){
+    async postMessage(message){
         this.messages.push(message);
+        return message;
     }
 
     /**

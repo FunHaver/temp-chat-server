@@ -2,6 +2,8 @@ const database = require('./database/database');
 const User = require('./entities/User');
 const ChatRoom = require('./entities/ChatRoom');
 const Message  = require("./entities/Message");
+const { getRoomUsers } = require('./userService');
+const userService = require('./userService');
 
 class EntityService {
     database;
@@ -57,6 +59,7 @@ class EntityService {
             throw new Error("Room not found!");
         }
         user.setChatRoomId(room.getUniqueId());
+        userService.addUser(user);
 
     }
 
@@ -82,9 +85,9 @@ class EntityService {
                 "chatRoomId": newMessage.getChatRoomId(),
                 "creationTime": newMessage.getCreationTime()
             });
-        let databaseObj = this.database.readEntity("Message", newMessage.getUniqueId());
+        let databaseObj = await this.database.readEntity("Message", newMessage.getUniqueId());
         newMessage = new Message(databaseObj);
-        
+        room.postMessage(newMessage);
         return newMessage;
     }
 
@@ -111,8 +114,25 @@ class EntityService {
      */
 
     async getChatRoomUsers(room){
-        room.users = await room.getUsers();
+        room.users = await getRoomUsers(room);
         return room;
+    }
+    /**
+     * 
+     * @param {ChatRoom} room 
+     */
+    async getChatRoomMessages(room) {
+        let dbMessages = await database.queryEntityForProperty("Message", "chatRoomId", room.getUniqueId());
+        let messageArray = [];
+        for(let i = 0; i < dbMessages.length; i++){
+                let message = await this.getEntity("Message", dbMessages[i].uniqueId);
+                message.setUser(await this.getEntity("User", message.getUserId()));
+                message.setChatRoom(await this.getEntity("ChatRoom", message.getChatRoomId()));
+                messageArray.push(message);
+        }
+        
+        room.setMessages(messageArray)
+        return room.getMessages();
     }
 }
 
