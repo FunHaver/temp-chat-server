@@ -1,6 +1,6 @@
 const Entity = require("./Entity");
 const User =  require("./User");
-
+const database = require("../database/database");
 class ChatRoom extends Entity{
 
     users = [];
@@ -23,10 +23,11 @@ class ChatRoom extends Entity{
     }
 
     /**
-     * 
+     * @param {ChatRoom} room
      * @returns {Array<User>} Array of users in room
      */
-    getUsers(){
+    async getUsers(){
+        this.users = await database.queryEntityForProperty("User", "chatRoomId", this.getUniqueId());
         return this.users;
     }
 
@@ -34,8 +35,8 @@ class ChatRoom extends Entity{
      * Add user to room
      * @param {User} user 
      */
-    addUser(user){
-        this.users.push(user);
+    async addUser(user){
+        await database.updateProperty(user, "chatRoomId", this.getUniqueId());
     }
 
     /**

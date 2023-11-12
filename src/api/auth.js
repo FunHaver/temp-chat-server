@@ -40,7 +40,7 @@ router.post(`/login`, (req, res) => {
         generateRoom(req.body.username).then( result => {
             res.send(result);
         })
-   
+          
     } else {
         try{
             joinRoom(req.body.username, req.body.chatRoomId).then(result => {

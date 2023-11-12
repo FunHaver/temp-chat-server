@@ -52,7 +52,7 @@ class EntityService {
      */
     async assignUserToRoom(user, room){
         try{
-            await this.database.updateProperty(user, "chatRoomId", room.getUniqueId());
+            await room.addUser(user);
         } catch(e){
             throw new Error("Room not found!");
         }
@@ -99,10 +99,20 @@ class EntityService {
             return null;
         } else {
             let newClass = this.classMap[className];
-            return new newClass(databaseObj);
+            return await new newClass(databaseObj);
         }
 
 
+    }
+
+    /**
+     * 
+     * @param {ChatRoom} room 
+     */
+
+    async getChatRoomUsers(room){
+        room.users = await room.getUsers();
+        return room;
     }
 }
 

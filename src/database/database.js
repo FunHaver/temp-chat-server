@@ -2,6 +2,8 @@ const Entity = require('../entities/Entity');
 
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(':memory:');
+// const db = new sqlite3.Database('test.sqlite3');
+
 
 //Initialize db schema
 class Database {
@@ -226,6 +228,27 @@ class Database {
         }
         return await deletePromise();
 
+    }
+
+    async queryEntityForProperty(className, property, propertyValue){
+        let table = this.camelToSnakeCase(className);
+        let column = this.camelToSnakeCase(property);
+        let readPromise = async function(){
+            return new Promise((resolve, reject) => {
+                db.all(`SELECT * from ${table} where ${column} = $propertyValue`,{
+                    $propertyValue: propertyValue
+                }, function(error, rows){
+                    if(error){
+                        console.error(error);
+                        reject(`Cannot query ${property} on table ${table}`);
+                    } else {
+                        resolve(rows);
+                    }
+                })
+            })
+        }
+
+        return await readPromise();
     }
 }
 

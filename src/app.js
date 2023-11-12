@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+const apiPort = 3000;
 let cors = {}; 
 
 const auth = require('./api/auth');
@@ -39,6 +39,6 @@ app.use(express.json());
 app.use('/api/auth', auth);
 app.use('/api/message', message);
 app.use('/api/chatRoom', chatRoom);
-app.listen(port, ()=> {
-    console.log(`Temp chat listening on port: ${port}`);
+app.listen(apiPort, ()=> {
+    console.log(`Temp chat listening on port: ${apiPort}`);
 })
