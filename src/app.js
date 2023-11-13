@@ -27,7 +27,9 @@ if(process.argv.length > 3){
     cors = require("cors");
     app.use(cors({
         accessControlAllowOrigin: "http://localhost",
-        optionsSuccessStatus: 200
+        optionsSuccessStatus: 200,
+        allowedHeaders: '*',
+        exposedHeaders: '*'
     }))
 }
 

@@ -20,7 +20,6 @@ class UserService {
         } else {
             this.userMap[user.chatRoomId].push(user);
         }
-        console.log(this.userMap);
     }
 
     /**
@@ -52,6 +51,26 @@ class UserService {
 
     getAllUsers(){
         return this.userMap;
+    }
+
+    getSingleUser(userid, chatRoomId){
+        let room = this.userMap[chatRoomId];
+        for(let i = 0; i < room.length; i++){
+            if(room[i]["uniqueId"] === userid){
+                return room[i];
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {string} userid
+     * @param {string} chatRoomId
+     * @param {*} res 
+     */
+    addServerEvent(userid, chatRoomId, res){
+        let user = this.getSingleUser(userid, chatRoomId);
+        user["push"] = res;
     }
 }
 

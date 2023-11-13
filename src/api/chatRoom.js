@@ -2,6 +2,7 @@ const express = require('express');
 const entityService = require('../entityService');
 const router = express.Router();
 const userService = require('../userService');
+
 router.get('/room', (req, res) => {
         entityService.getEntity("ChatRoom", req.query.id)
         .then(result => {
@@ -47,11 +48,15 @@ router.get("/users", (req, res) => {
             res.status(500).send("Incorrect parameters")
         }
     } else {
-        res.status(500).send("ID param required")
+        res.status(500).send("ID param required");
     }
 })
 
-
+router.get("/listen", (req, res) => {
+    //websocket
+    
+    userService.addServerEvent(req.query.userId, req.query.chatRoomId);
+})
 
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const Entity = require("./Entity");
-const moment = require("moment");
+const dayjs = require("dayjs");
 const entityService = require("../entityService");
 
 class Message extends Entity {
@@ -15,7 +15,7 @@ class Message extends Entity {
             this.userId = constructorArg["userId"];
             this.chatRoomId = constructorArg["chatRoomId"];
             this.content = constructorArg["content"];
-            this.creationTime = moment().toISOString();
+            this.creationTime = dayjs().toISOString();
         } else {
             super(constructorArg);
             for(const [key, value] of Object.entries(constructorArg)){
