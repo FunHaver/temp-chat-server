@@ -15,7 +15,6 @@ router.get('/room', (req, res) => {
             console.log(reject)
             res.status(500).send(reject);
         }).then(result => {
-            userService.updateAllUsersInRoom(result, result.users);
             res.send(result);
         }).catch(error => {
             if(error === 404){
@@ -52,11 +51,7 @@ router.get("/users", (req, res) => {
     }
 })
 
-router.get("/listen", (req, res) => {
-    //websocket
-    
-    userService.addServerEvent(req.query.userId, req.query.chatRoomId);
-})
+
 
 
 module.exports = router;

@@ -60,7 +60,6 @@ class EntityService {
         }
         user.setChatRoomId(room.getUniqueId());
         userService.addUser(user);
-
     }
 
     /**

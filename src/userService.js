@@ -42,6 +42,9 @@ class UserService {
      * @returns 
      */
     getRoomUsers(chatRoomId){
+        if(this.userMap[chatRoomId] === undefined){
+            throw new Error(`Chat room with ID ${chatRoomId} does not exist!`);
+        }
         return this.userMap[chatRoomId];
     }
 
@@ -66,11 +69,11 @@ class UserService {
      * 
      * @param {string} userid
      * @param {string} chatRoomId
-     * @param {*} res 
+     * @param {WebSocket} ws 
      */
-    addServerEvent(userid, chatRoomId, res){
+    addWebSocket(userid, chatRoomId, ws){
         let user = this.getSingleUser(userid, chatRoomId);
-        user["push"] = res;
+        user["ws"] = ws;
     }
 }
 

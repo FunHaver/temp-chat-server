@@ -7,6 +7,7 @@ const auth = require('./api/auth');
 const message = require('./api/message');
 const chatRoom = require('./api/chatRoom');
 const database = require('./database/database');
+const ChatSocket = require("./ChatSocket");
 
 let helpCLIMessage = function(){
     console.log("To run in production, do not add any arguments: node app.js");
@@ -44,3 +45,4 @@ app.use('/api/chatRoom', chatRoom);
 app.listen(apiPort, ()=> {
     console.log(`Temp chat listening on port: ${apiPort}`);
 })
+let chatSocket = new ChatSocket();
