@@ -1,5 +1,4 @@
-const ChatRoom = require("./entities/ChatRoom");
-const User = require("./entities/User");
+const User = require("../entities/User");
 
 class UserService {
     userMap = {};

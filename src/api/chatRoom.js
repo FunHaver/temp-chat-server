@@ -1,7 +1,7 @@
 const express = require('express');
-const entityService = require('../entityService');
+const entityService = require('../services/entityService');
 const router = express.Router();
-const userService = require('../userService');
+const userService = require('../services/userService');
 
 router.get('/room', (req, res) => {
         entityService.getEntity("ChatRoom", req.query.id)

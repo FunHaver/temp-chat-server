@@ -1,6 +1,6 @@
 const Entity = require("./Entity");
 const dayjs = require("dayjs");
-const entityService = require("../entityService");
+const entityService = require("../services/entityService");
 
 class Message extends Entity {
     content = '';

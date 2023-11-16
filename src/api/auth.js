@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const entityService = require('../entityService');
+const entityService = require('../services/entityService');
 const ChatRoom = require('../entities/ChatRoom');
 const User = require('../entities/User');
 

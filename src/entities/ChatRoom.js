@@ -37,6 +37,7 @@ class ChatRoom extends Entity{
      */
     async addUser(user){
         await database.updateProperty(user, "chatRoomId", this.getUniqueId());
+        this.addUser(user);
     }
 
     /**

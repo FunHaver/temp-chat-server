@@ -1,6 +1,7 @@
 const { WebSocketServer } = require('ws');
 const sockServer = new WebSocketServer({port: 3001});
-const userService = require('./userService');
+const userService = require('./services/userService');
+const messageService = require('./services/messageService');
 
 class ChatSocket {
 
@@ -34,10 +35,26 @@ class ChatSocket {
       } catch(e){
         console.error(e);
       }
-
     }
 
-    init(){
+    /**
+     * 
+     * @param {Message} message 
+     */
+    relayMessage(message){
+      try {
+        let roomParticipants = userService.getRoomUsers(message.chatRoom.uniqueId);
+        for(let i = 0; i < roomParticipants.length; i++){
+          roomParticipants[i].ws.send(
+            JSON.stringify({"CHAT": message})
+          )
+        }
+      } catch(e){
+        console.error(e);
+      }
+    }
+
+     init(){
         sockServer.on('connection', ws => {
             ws.on('close', () => console.log('Client has disconnected!'))
             ws.on('message', data => {
@@ -45,6 +62,12 @@ class ChatSocket {
               if(Object.hasOwn(messageObj, "ANNOUNCE")){
                 userService.addWebSocket(messageObj["ANNOUNCE"].uniqueId, messageObj["ANNOUNCE"].chatRoomId, ws);
                 this.annouceArrival(messageObj["ANNOUNCE"].chatRoomId);
+              } else if (Object.hasOwn(messageObj), "MESSAGE"){
+                messageService.submitMessage(messageObj["MESSAGE"]).then(result => {
+                  this.relayMessage(result);
+                }).catch(error => {
+                  throw new Error(error);
+                })
               }
             })
         })

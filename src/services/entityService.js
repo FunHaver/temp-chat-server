@@ -1,7 +1,7 @@
-const database = require('./database/database');
-const User = require('./entities/User');
-const ChatRoom = require('./entities/ChatRoom');
-const Message  = require("./entities/Message");
+const database = require('../database/database');
+const User = require('../entities/User');
+const ChatRoom = require('../entities/ChatRoom');
+const Message  = require("../entities/Message");
 const { getRoomUsers } = require('./userService');
 const userService = require('./userService');
 
@@ -86,7 +86,8 @@ class EntityService {
             });
         let databaseObj = await this.database.readEntity("Message", newMessage.getUniqueId());
         newMessage = new Message(databaseObj);
-        room.postMessage(newMessage);
+        newMessage.setUser(user)
+        newMessage.setChatRoom(room);
         return newMessage;
     }
 
