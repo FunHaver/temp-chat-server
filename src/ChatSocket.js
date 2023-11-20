@@ -61,8 +61,9 @@ class ChatSocket {
             ws.on('message', data => {
               let messageObj = JSON.parse(data.toString('utf-8'));
               if(Object.hasOwn(messageObj, "ANNOUNCE")){
-                entityService.getEntity("chatRoom", messageObj["ANNOUNCE"].chatRoomId).then(result => {
+                entityService.getEntity("ChatRoom", messageObj["ANNOUNCE"].chatRoomId).then(result => {
                   if(result === null){
+                    console.log("this room does not exist.");
                     return "this room does not exist."
                   } else {
                     userService.addWebSocket(messageObj["ANNOUNCE"].uniqueId, messageObj["ANNOUNCE"].chatRoomId, ws);
