@@ -38,17 +38,17 @@ router.get("/messages", (req, res) => {
 })
 
 router.get("/users", (req, res) => {
-    if(req.query.id){
+    entityService.getEntity("ChatRoom", req.query.id).then(result => {
         let roomUsers = userService.getRoomUsers(req.query.id);
 
         if(roomUsers){
             res.send(roomUsers);
         } else {
-            res.status(500).send("Incorrect parameters")
+            res.status(404).send("Room does not exist");
         }
-    } else {
-        res.status(500).send("ID param required");
-    }
+    }).catch(error => {
+        res.status(500).send("Internal server error");
+    })
 })
 
 
