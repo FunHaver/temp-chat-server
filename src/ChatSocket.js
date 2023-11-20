@@ -2,6 +2,7 @@ const { WebSocketServer } = require('ws');
 const sockServer = new WebSocketServer({port: 3001});
 const userService = require('./services/userService');
 const messageService = require('./services/messageService');
+const entityService = require('./services/entityService');
 
 class ChatSocket {
 
@@ -60,8 +61,14 @@ class ChatSocket {
             ws.on('message', data => {
               let messageObj = JSON.parse(data.toString('utf-8'));
               if(Object.hasOwn(messageObj, "ANNOUNCE")){
-                userService.addWebSocket(messageObj["ANNOUNCE"].uniqueId, messageObj["ANNOUNCE"].chatRoomId, ws);
-                this.annouceArrival(messageObj["ANNOUNCE"].chatRoomId);
+                entityService.getEntity("chatRoom", messageObj["ANNOUNCE"].chatRoomId).then(result => {
+                  if(result === null){
+                    return "this room does not exist."
+                  } else {
+                    userService.addWebSocket(messageObj["ANNOUNCE"].uniqueId, messageObj["ANNOUNCE"].chatRoomId, ws);
+                    this.annouceArrival(messageObj["ANNOUNCE"].chatRoomId);
+                  }
+                })
               } else if (Object.hasOwn(messageObj), "MESSAGE"){
                 messageService.submitMessage(messageObj["MESSAGE"]).then(result => {
                   this.relayMessage(result);

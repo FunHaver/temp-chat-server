@@ -122,17 +122,22 @@ class EntityService {
      * @param {ChatRoom} room 
      */
     async getChatRoomMessages(room) {
-        let dbMessages = await database.queryEntityForProperty("Message", "chatRoomId", room.getUniqueId());
-        let messageArray = [];
-        for(let i = 0; i < dbMessages.length; i++){
-                let message = await this.getEntity("Message", dbMessages[i].uniqueId);
-                message.setUser(await this.getEntity("User", message.getUserId()));
-                message.setChatRoom(await this.getEntity("ChatRoom", message.getChatRoomId()));
-                messageArray.push(message);
+        if(room !== null){
+            let dbMessages = await database.queryEntityForProperty("Message", "chatRoomId", room.getUniqueId());
+            let messageArray = [];
+            for(let i = 0; i < dbMessages.length; i++){
+                    let message = await this.getEntity("Message", dbMessages[i].uniqueId);
+                    message.setUser(await this.getEntity("User", message.getUserId()));
+                    message.setChatRoom(await this.getEntity("ChatRoom", message.getChatRoomId()));
+                    messageArray.push(message);
+            }
+            
+            room.setMessages(messageArray)
+            return room.getMessages();
+        } else {
+            throw new Error("Room does not exist.");
         }
         
-        room.setMessages(messageArray)
-        return room.getMessages();
     }
 }
 
