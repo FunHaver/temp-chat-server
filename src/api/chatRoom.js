@@ -26,10 +26,11 @@ router.get('/room', (req, res) => {
 })
 
 router.get("/messages", (req, res) => {
+    const response = res;
     entityService.getEntity("ChatRoom", req.query.id).then(result => {
         return entityService.getChatRoomMessages(result)
     }).then(result => {
-        res.send(result);
+        response.send(result);
     })
     .catch(error => {
         console.error(error);

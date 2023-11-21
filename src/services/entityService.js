@@ -53,13 +53,19 @@ class EntityService {
      * @param {ChatRoom} room 
      */
     async assignUserToRoom(user, room){
-        try{
-            await room.addUser(user);
-        } catch(e){
-            throw new Error("Room not found!");
+        let dupe = await room.isDupe(user);
+
+        if(dupe){
+            throw new Error("Duplicate User!", {cause: "duplicateUser"});
         }
-        user.setChatRoomId(room.getUniqueId());
-        userService.addUser(user);
+        try {
+            await room.addUser(user);
+            user.setChatRoomId(room.getUniqueId());
+            userService.addUser(user);
+        } catch(e){
+            console.log(e);
+            throw new Error("Room not found!", {cause: "roomNotFound"});
+        }
     }
 
     /**

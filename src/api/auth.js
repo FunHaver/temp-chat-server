@@ -25,16 +25,18 @@ let generateRoom = async function(username){
  * @returns {Object} chat room object
  */
 let joinRoom = async function(username, chatRoomId){
-    let user = await entityService.createUser(username);
-    let chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);
+    let user;
+    let chatRoom;
     try {
+        user = await entityService.createUser(username);
+        chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);
         await entityService.assignUserToRoom(user, chatRoom);
         return {
             user: user,
             chatRoom: chatRoom
         }
     } catch (e){
-        throw new Error(e);
+        throw e;
     }
 
 }
@@ -51,7 +53,13 @@ router.post(`/login`, (req, res) => {
         joinRoom(req.body.username, req.body.chatRoomId).then(result => {
             res.send(result);
         }).catch(e => {
-            res.status(404).send("Chat room not found!")
+            if("cause" in e && e.cause === "duplicateUser"){
+                res.send({"error": `Username ${req.body.username} is already in use.`})
+            } else if("cause" in e && e.cause === "roomNotFound") {
+                res.status(404).send({"error": "Chat room not found!"});
+            } else {
+                res.status(500).send({"error": "Internal server error"});
+            }
         })
     }
 })

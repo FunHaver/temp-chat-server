@@ -41,6 +41,21 @@ class ChatRoom extends Entity{
     }
 
     /**
+     * 
+     * @param {User} newUser 
+     * @returns {boolean}
+     */
+    async isDupe(newUser){
+        const currentUsers = await this.getUsers();
+        for(let i = 0; i < currentUsers.length; i++){
+            if(currentUsers[i].username === newUser.username){
+                return true;
+            }
+        }
+
+        return false;
+    }
+    /**
      * Remove user from room
      * @param {User} user 
      */
