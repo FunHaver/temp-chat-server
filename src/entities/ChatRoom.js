@@ -1,11 +1,12 @@
 const Entity = require("./Entity");
 const User =  require("./User");
 const database = require("../database/database");
+const { uniqueNamesGenerator, adjectives, animals } = require("unique-names-generator");
 class ChatRoom extends Entity{
 
     users = [];
     messages = [];
-    timeRemaining = 600; //seconds
+    name = "";
     
     /**
      * Construct ChatRoom
@@ -13,13 +14,23 @@ class ChatRoom extends Entity{
      */
     constructor(constructorArg){
         if(constructorArg === undefined){
-            super("ChatRoom")
+            super("ChatRoom");
+            const name = uniqueNamesGenerator({dictionaries: [adjectives, animals], separator: "_", length: 2});
+            this.setName(name)
         } else {
             super(constructorArg);
             for(const [key, value] of Object.entries(constructorArg)){
                 this[key] = value;
             }
         }
+    }
+
+    setName(name){
+        this.name = name;
+    }
+
+    getName(){
+        return this.name;
     }
 
     /**

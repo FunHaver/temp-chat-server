@@ -20,7 +20,8 @@ class Database {
                     username VARYING CHARACTER(25) NOT NULL, 
                     chat_room_id VARYING CHARACTER(255), 
                     FOREIGN KEY(chat_room_id) REFERENCES chat_room(unique_id))`);
-            db.run("CREATE TABLE chat_room(unique_id VARYING CHARACTER(255) UNIQUE PRIMARY KEY NOT NULL)");
+            db.run(`CREATE TABLE chat_room(unique_id VARYING CHARACTER(255) UNIQUE PRIMARY KEY NOT NULL,
+                    name VARYING CHARACTER(255) NOT NULL)`);
             db.run(`CREATE TABLE message(unique_id VARYING CHARACTER(255) UNIQUE PRIMARY KEY NOT NULL,
                     content VARYING CHARACTER(255) NOT NULL,
                     user_id VARYING CHARACTER(255) NOT NULL,
@@ -119,7 +120,7 @@ class Database {
             if(error){
                 reject(error);
             } else {
-                resolve(row)
+                resolve(result)
             }
         })})
         }

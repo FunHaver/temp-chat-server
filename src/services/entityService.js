@@ -40,7 +40,8 @@ class EntityService {
     async createChatRoom() {
         let newChatRoom = new ChatRoom();
         await this.database.createEntity(newChatRoom, {
-            "uniqueId": newChatRoom.getUniqueId()
+            "uniqueId": newChatRoom.getUniqueId(),
+            "name": newChatRoom.getName()
         })
         let databaseobj = await this.database.readEntity("ChatRoom", newChatRoom.getUniqueId());
         newChatRoom = new ChatRoom(databaseobj);
