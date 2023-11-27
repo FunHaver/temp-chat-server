@@ -10,7 +10,7 @@ Run:
 `npm install`
 ## Run instructions
 For production:
-`npm script start`
+`npm run start`
 
 For development:
-`npm script start-dev`
+`npm run start-dev`
