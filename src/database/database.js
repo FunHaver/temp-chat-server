@@ -210,17 +210,17 @@ class Database {
      * @async
      * @param {Entity} entity 
      */
-    async deleteEntity(entity){
-        let table = this.camelToSnakeCase(entity.className);
+    async deleteEntity(className, uniqueId){
+        let table = this.camelToSnakeCase(className);
         let deletePromise = async function(){
             return new Promise((resolve, reject) => {
                 db.run(`DELETE from ${table} where unique_id = $uniqueId`, 
                 {
-                    $uniqueId: entity.getUniqueId()
+                    $uniqueId: uniqueId
                 }, function(error){
                     if(error){
                         console.error(error);
-                        reject(`Cannot delete ${entity.className} with uniqueId ${entity.getUniqueId()}`);
+                        reject(`Cannot delete ${entity.className} with uniqueId ${uniqueId}`);
                     } else {
                         resolve();
                     }
@@ -228,7 +228,29 @@ class Database {
             })
         }
         return await deletePromise();
+    }
 
+    async deleteEntities(className, columnName, columnData){
+        let table = this.camelToSnakeCase(className);
+        let column = this.camelToSnakeCase(columnName);
+
+        let deletePromise = async function(){
+            return new Promise((resolve, reject) => {
+                db.run(`DELETE from ${table} where ${column} = $columnValue`,
+                {
+                    $columnValue: columnData
+                }, function(error){
+                    if(error){
+                        console.error(error);
+                        reject(`Cannot delete ${className}s with ${column} value ${columnData}`);
+                    } else {
+                        resolve();
+                    }
+                })
+            })
+        }
+
+        return await deletePromise();
     }
 
     async queryEntityForProperty(className, property, propertyValue){

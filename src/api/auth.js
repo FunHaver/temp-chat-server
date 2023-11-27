@@ -30,6 +30,9 @@ let joinRoom = async function(username, chatRoomId){
     try {
         user = await entityService.createUser(username);
         chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);
+        if(chatRoom === null){
+            throw new Error("Room not found!", {cause: "roomNotFound"})
+        }
         await entityService.assignUserToRoom(user, chatRoom);
         return {
             user: user,
@@ -58,6 +61,7 @@ router.post(`/login`, (req, res) => {
             } else if("cause" in e && e.cause === "roomNotFound") {
                 res.status(404).send({"error": "Chat room not found!"});
             } else {
+                console.log(e);
                 res.status(500).send({"error": "Internal server error"});
             }
         })

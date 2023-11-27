@@ -23,16 +23,11 @@ class UserService {
 
     /**
      * 
-     * @param {User} user 
+     * @param {string} group
+     * @param {number} index 
      */
-    removeUser(user){
-        let chatRoomUsers = this.userMap[user.chatRoomId];
-        for(let i = 0; i < chatRoomUsers.length; i++){
-            if(chatRoomUsers[i]["uniqueId"] === chatRoomUsers[i]["uniqueId"]){
-               this.userMap[user.chatRoomId][i].splice(i, 1);
-               break;
-            }
-        }
+    removeUser(group, index){
+        this.userMap[group].splice(index);
     }
 
     /**
@@ -53,6 +48,10 @@ class UserService {
 
     getAllUsers(){
         return this.userMap;
+    }
+
+    removeChatRoom(uniqueId){
+        delete this.userMap[uniqueId];
     }
 
     getSingleUser(userid, chatRoomId){

@@ -115,6 +115,16 @@ class EntityService {
 
     }
 
+    async deleteChatRoom(uniqueId){
+        try {
+            await this.database.deleteEntities("User", "chatRoomId", uniqueId)
+            await this.database.deleteEntity("ChatRoom", uniqueId);
+
+        } catch(e){
+            console.error(e);
+        }
+    }
+
     /**
      * 
      * @param {ChatRoom} room 

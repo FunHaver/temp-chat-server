@@ -14,7 +14,8 @@ class ChatSocket {
      * 
      * @param {string} chatRoomId 
      */
-    annouceArrival(chatRoomId){
+    announceArrival(chatRoomId){
+
       try{
         let roomParticipants = userService.getRoomUsers(chatRoomId);
         let participantsNoWS = [];
@@ -27,7 +28,6 @@ class ChatSocket {
             "chatRoomId": roomParticipants[i]["chatRoomId"]
           })
         }
-
         for(let i = 0; i < roomParticipants.length; i++){
             roomParticipants[i].ws.send(
               JSON.stringify({"USERLIST": participantsNoWS})
@@ -55,9 +55,66 @@ class ChatSocket {
       }
     }
 
+    heartbeat(ws){
+      ws.isAlive = true;
+    }
+
+    heartbeatAudit(){
+      let users = userService.getAllUsers();
+      for (const [key, value] of Object.entries(users)){
+        if(value.length === 0){
+          console.log(`Chat room ${key} reaped.`);
+          userService.removeChatRoom(key);
+          entityService.deleteChatRoom(key);
+        } else {
+          for(let i = 0; i < value.length; i++){
+            let user = value[i];
+          
+            if(user.ws.isAlive === false){
+              console.log(`${user.username} (${user.uniqueId}) has left room ${key}`);
+              userService.removeUser(key, i);
+
+              //announce departure. Copied and pasted because of scoping issues
+              try{
+                let roomParticipants = userService.getRoomUsers(key);
+                let participantsNoWS = [];
+        
+                for(let i = 0; i < roomParticipants.length; i++){
+                  participantsNoWS.push({
+                    "uniqueId": roomParticipants[i]["uniqueId"],
+                    "className": roomParticipants[i]["className"],
+                    "username": roomParticipants[i]["username"],
+                    "chatRoomId": roomParticipants[i]["chatRoomId"]
+                  })
+                }
+                for(let i = 0; i < roomParticipants.length; i++){
+                    roomParticipants[i].ws.send(
+                      JSON.stringify({"USERLIST": participantsNoWS})
+                      )
+                }
+              } catch(e){
+                console.error(e);
+              }
+
+
+            }
+            if(user.ws.isAlive === false && user.ws.readyState !== 3){
+              user.ws.terminate();
+            }
+
+            
+
+            user.ws.isAlive = false;
+            user.ws.ping();
+          }
+        }
+      }
+    }
+
      init(){
         sockServer.on('connection', ws => {
-            ws.on('close', () => console.log('Client has disconnected!'))
+            ws.on('pong', () => this.heartbeat(ws))
+
             ws.on('message', data => {
               let messageObj = JSON.parse(data.toString('utf-8'));
               if(Object.hasOwn(messageObj, "ANNOUNCE")){
@@ -66,8 +123,9 @@ class ChatSocket {
                     console.log("this room does not exist.");
                     return "this room does not exist."
                   } else {
+                    ws.isAlive = true;
                     userService.addWebSocket(messageObj["ANNOUNCE"].uniqueId, messageObj["ANNOUNCE"].chatRoomId, ws);
-                    this.annouceArrival(messageObj["ANNOUNCE"].chatRoomId);
+                    this.announceArrival(messageObj["ANNOUNCE"].chatRoomId);
                   }
                 })
               } else if (Object.hasOwn(messageObj), "MESSAGE"){
@@ -78,6 +136,12 @@ class ChatSocket {
                 })
               }
             })
+        })
+
+        const heartBeatInterval = setInterval(this.heartbeatAudit, 5000);
+
+        sockServer.on('close', () => {
+          clearInterval(heartBeatInterval);
         })
     }
 }
