@@ -1,5 +1,6 @@
 const { WebSocketServer } = require('ws');
-const sockServer = new WebSocketServer({port: 3001});
+const config = require("config");
+const sockServer = new WebSocketServer({port: config.get('networking.webSocketPort')});
 const userService = require('./services/userService');
 const messageService = require('./services/messageService');
 const entityService = require('./services/entityService');

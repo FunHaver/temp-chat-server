@@ -1,6 +1,7 @@
 const express = require('express');
+const config = require('config');
 const app = express();
-const apiPort = 3000;
+const apiPort = config.get('networking.apiPort');
 let cors = {}; 
 
 const auth = require('./api/auth');

@@ -1,0 +1,6 @@
+{
+    "networking": {
+        "apiPort": 3000,
+        "webSocketPort": 3000
+    }
+}
