@@ -70,7 +70,7 @@ class ChatSocket {
           for(let i = 0; i < value.length; i++){
             let user = value[i];
           
-            if(user.ws.isAlive === false){
+            if(user.ws.isAlive === false || user.ws.readyState === 3){
               console.log(`${user.username} (${user.uniqueId}) has left room ${key}`);
               userService.removeUser(key, i);
 
