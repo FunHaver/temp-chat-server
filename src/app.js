@@ -41,7 +41,7 @@ app.use(express.json());
 
 app.use('/api/auth', auth);
 app.use('/api/chatRoom', chatRoom);
-app.listen(apiPort, ()=> {
+app.listen(apiPort, "localhost", ()=> {
     console.log(`Temp chat listening on port: ${apiPort}`);
 })
 let chatSocket = new ChatSocket();
