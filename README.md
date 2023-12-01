@@ -3,7 +3,7 @@ The server code for the Temp Chat application. Deployment instructions [here](ht
 
 ## Installation instructions
 
-This application runs alongside it's back-end counterpart [found here](https://github.com/FunHaver/temp-chat-client)
+This application runs alongside it's front-end counterpart [found here](https://github.com/FunHaver/temp-chat-client)
 
 These instructions are intended for a development environment.
 
