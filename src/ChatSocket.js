@@ -70,44 +70,45 @@ class ChatSocket {
         } else {
           for(let i = 0; i < value.length; i++){
             let user = value[i];
-          
-            if(user.ws.isAlive === false || user.ws.readyState === 3){
-              console.log(`${user.username} (${user.uniqueId}) has left room ${key}`);
-              userService.removeUser(key, i);
+            if(user.ws){
+              if(user.ws.isAlive === false || user.ws.readyState === 3){
+                console.log(`${user.username} (${user.uniqueId}) has left room ${key}`);
+                userService.removeUser(key, i);
 
-              //announce departure. Copied and pasted because of scoping issues
-              try{
-                let roomParticipants = userService.getRoomUsers(key);
-                let participantsNoWS = [];
-        
-                for(let i = 0; i < roomParticipants.length; i++){
-                  participantsNoWS.push({
-                    "uniqueId": roomParticipants[i]["uniqueId"],
-                    "className": roomParticipants[i]["className"],
-                    "username": roomParticipants[i]["username"],
-                    "chatRoomId": roomParticipants[i]["chatRoomId"]
-                  })
+                //announce departure. Copied and pasted because of scoping issues
+                try{
+                  let roomParticipants = userService.getRoomUsers(key);
+                  let participantsNoWS = [];
+          
+                  for(let i = 0; i < roomParticipants.length; i++){
+                    participantsNoWS.push({
+                      "uniqueId": roomParticipants[i]["uniqueId"],
+                      "className": roomParticipants[i]["className"],
+                      "username": roomParticipants[i]["username"],
+                      "chatRoomId": roomParticipants[i]["chatRoomId"]
+                    })
+                  }
+                  for(let i = 0; i < roomParticipants.length; i++){
+                      roomParticipants[i].ws.send(
+                        JSON.stringify({"USERLIST": participantsNoWS})
+                        )
+                  }
+                } catch(e){
+                  console.error(e);
                 }
-                for(let i = 0; i < roomParticipants.length; i++){
-                    roomParticipants[i].ws.send(
-                      JSON.stringify({"USERLIST": participantsNoWS})
-                      )
-                }
-              } catch(e){
-                console.error(e);
+
+
+              }
+              if(user.ws.isAlive === false && user.ws.readyState !== 3){
+                user.ws.terminate();
               }
 
+              
 
+              user.ws.isAlive = false;
+              user.ws.ping();
             }
-            if(user.ws.isAlive === false && user.ws.readyState !== 3){
-              user.ws.terminate();
-            }
-
-            
-
-            user.ws.isAlive = false;
-            user.ws.ping();
-          }
+        }
         }
       }
     }
