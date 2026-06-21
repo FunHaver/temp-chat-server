@@ -59,15 +59,13 @@ class MessageService {
     submitMessage = async function(message) {
        return this.validateMessage(message).then( result => {
             if(result.errors.length > 0){
-                return result;
+                throw new Error("Message validation failed.")
             } else {
                 return entityService.createMessage(result.user, result.chatRoom, result.content);
             }
         }).then(result => {
             //update all clients with new message
             return result
-        }).catch(e => {
-            throw new Error(e);
         })
     }
 }
