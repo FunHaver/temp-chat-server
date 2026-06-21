@@ -27,7 +27,7 @@ class UserService {
      * @param {number} index 
      */
     removeUser(group, index){
-        this.userMap[group].splice(index);
+        this.userMap[group].splice(index,1);
     }
 
     /**
