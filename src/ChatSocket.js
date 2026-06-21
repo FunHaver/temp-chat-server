@@ -45,11 +45,15 @@ class ChatSocket {
      */
     relayMessage(message){
       try {
-        let roomParticipants = userService.getRoomUsers(message.chatRoom.uniqueId);
-        for(let i = 0; i < roomParticipants.length; i++){
-          roomParticipants[i].ws.send(
-            JSON.stringify({"CHAT": message})
-          )
+        if(message.chatRoom){
+          let roomParticipants = userService.getRoomUsers(message.chatRoom.uniqueId);
+          for(let i = 0; i < roomParticipants.length; i++){
+            roomParticipants[i].ws.send(
+              JSON.stringify({"CHAT": message})
+            )
+          }
+        } else {
+          throw new Error("Message has no chat room");
         }
       } catch(e){
         console.error(e);
@@ -107,6 +111,7 @@ class ChatSocket {
 
               user.ws.isAlive = false;
               user.ws.ping();
+              user.ws.send(JSON.stringify({ "HEARTBEAT": true }));
             }
         }
         }

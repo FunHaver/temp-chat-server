@@ -59,9 +59,7 @@ class MessageService {
     submitMessage = async function(message) {
        return this.validateMessage(message).then( result => {
             if(result.errors.length > 0){
-                res.status(500).send({
-                    "ERRORS": result.errors
-                })
+                return result;
             } else {
                 return entityService.createMessage(result.user, result.chatRoom, result.content);
             }

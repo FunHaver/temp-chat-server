@@ -27,21 +27,17 @@ let generateRoom = async function(username){
 let joinRoom = async function(username, chatRoomId){
     let user;
     let chatRoom;
-    try {
-        user = await entityService.createUser(username);
-        chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);
-        if(chatRoom === null){
-            throw new Error("Room not found!", {cause: "roomNotFound"})
-        }
-        await entityService.assignUserToRoom(user, chatRoom);
-        return {
-            user: user,
-            chatRoom: chatRoom
-        }
-    } catch (e){
-        throw e;
-    }
 
+    user = await entityService.createUser(username);
+    chatRoom = await entityService.getEntity("ChatRoom", chatRoomId);
+    if(chatRoom === null){
+        throw new Error("Room not found!", {cause: "roomNotFound"})
+    }
+    await entityService.assignUserToRoom(user, chatRoom);
+    return {
+        user: user,
+        chatRoom: chatRoom
+    }
 }
 
 router.post(`/login`, (req, res) => {
