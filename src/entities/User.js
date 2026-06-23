@@ -3,6 +3,7 @@ const Entity = require("./Entity");
 class User extends Entity {
     username = '';
     chatRoomId = '';
+    online = true;
     /**
      * Construct user
      * @param {Object} constructorArg for new instances, an object like so 
@@ -49,6 +50,22 @@ class User extends Entity {
      */
     getChatRoomId(){
         return this.chatRoomId;
+    }
+
+
+    /**
+     * 
+     * Toggle online to false
+     */
+    goOffline(){
+        this.online = false;
+    }
+    /**
+     * 
+     * @returns {boolean} online status
+     */
+    getOnline(){
+        return this.online;
     }
 }
 

@@ -71,7 +71,7 @@ class ChatRoom extends Entity{
      * @param {User} user 
      */
     removeUser(user){
-        //
+        user.goOffline();
     }
 
 

@@ -26,13 +26,16 @@ class ChatSocket {
             "uniqueId": roomParticipants[i]["uniqueId"],
             "className": roomParticipants[i]["className"],
             "username": roomParticipants[i]["username"],
-            "chatRoomId": roomParticipants[i]["chatRoomId"]
+            "chatRoomId": roomParticipants[i]["chatRoomId"],
+            "online": roomParticipants[i]["online"]
           })
         }
         for(let i = 0; i < roomParticipants.length; i++){
+          if(roomParticipants[i].online){
             roomParticipants[i].ws.send(
               JSON.stringify({"USERLIST": participantsNoWS})
-              )
+            )
+          }
         }
       } catch(e){
         console.error(e);
@@ -67,13 +70,14 @@ class ChatSocket {
     heartbeatAudit(){
       let users = userService.getAllUsers();
       for (const [key, value] of Object.entries(users)){
-        if(value.length === 0){
+        if(value.every(u => !u.online)){
           console.log(`Chat room ${key} reaped.`);
           userService.removeChatRoom(key);
           entityService.deleteChatRoom(key);
         } else {
           for(let i = 0; i < value.length; i++){
             let user = value[i];
+            if(!user.online) continue;
             if(user.ws){
               if(user.ws.isAlive === false || user.ws.readyState === 3){
                 console.log(`${user.username} (${user.uniqueId}) has left room ${key}`);
@@ -83,37 +87,37 @@ class ChatSocket {
                 try{
                   let roomParticipants = userService.getRoomUsers(key);
                   let participantsNoWS = [];
-          
+
                   for(let i = 0; i < roomParticipants.length; i++){
                     participantsNoWS.push({
                       "uniqueId": roomParticipants[i]["uniqueId"],
                       "className": roomParticipants[i]["className"],
                       "username": roomParticipants[i]["username"],
-                      "chatRoomId": roomParticipants[i]["chatRoomId"]
+                      "chatRoomId": roomParticipants[i]["chatRoomId"],
+                      "online": roomParticipants[i]["online"]
                     })
                   }
                   for(let i = 0; i < roomParticipants.length; i++){
+                    if(roomParticipants[i].online){
                       roomParticipants[i].ws.send(
                         JSON.stringify({"USERLIST": participantsNoWS})
-                        )
+                      )
+                    }
                   }
                 } catch(e){
                   console.error(e);
                 }
-
 
               }
               if(user.ws.isAlive === false && user.ws.readyState !== 3){
                 user.ws.terminate();
               }
 
-              
-
               user.ws.isAlive = false;
               user.ws.ping();
               user.ws.send(JSON.stringify({ "HEARTBEAT": true }));
             }
-        }
+          }
         }
       }
     }
