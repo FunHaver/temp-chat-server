@@ -143,7 +143,7 @@ class ChatSocket {
                 messageService.submitMessage(messageObj["MESSAGE"]).then(result => {
                   this.relayMessage(result);
                 }).catch(error => {
-                  throw new Error(error);
+                  console.error(error);
                 })
               }
             })
